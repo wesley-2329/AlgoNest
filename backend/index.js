@@ -64,4 +64,8 @@ app.set('io', io);
 // Initialize Queue events listener
 require('./queue/submissionWorkerEvents.js')(app);
 
+// Start consolidated background queue consumer worker
+const { startSubmissionWorker } = require('./queue/submissionWorker.js');
+startSubmissionWorker();
+
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

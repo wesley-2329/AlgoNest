@@ -4,6 +4,7 @@ const Problem = require('../models/Problem.js');
 const axios = require('axios');
 
 const { submissionQueue } = require('../queue/submissionQueue.js');
+const { runSingleTestCase } = require('../utils/codeRunner.js');
 
 exports.createSubmission = async (req, res) => {
     const { language, code, problemId } = req.body;
@@ -61,19 +62,13 @@ exports.getProblemSubmissions = async (req, res) => {
 exports.runCustomCode = async (req, res) => {
     const { language, code, input } = req.body;
     try {
-        // Directly call the runner service with the provided data
-        const runnerResponse = await axios.post('http://localhost:7777/run', {
-            language,
-            code,
-            input,
-        });
-        // Send the raw response from the runner back to the client
-        res.json(runnerResponse.data);
+        const result = await runSingleTestCase(language, code, input || '');
+        res.json(result);
     } catch (err) {
-        console.error('RUNNER CALL FAILED:', err.message); 
+        console.error('CONSOLIDATED RUN CODE FAILED:', err.message); 
         res.status(500).json({ 
             message: 'Error executing code', 
-            error: err.response ? err.response.data : err.message 
+            error: err.message 
         });
     }
 };

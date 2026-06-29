@@ -1,6 +1,13 @@
 {
+  "name": "algonest-root",
+  "version": "1.0.0",
+  "description": "AlgoNest V2 Collaborative Coding and Interview Platform",
+  "scripts": {
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:client": "npm run dev --prefix client",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:client\""
+  },
   "dependencies": {
-    "express": "^5.1.0",
-    "nodemon": "^3.1.10"
+    "concurrently": "^8.2.2"
   }
 }
