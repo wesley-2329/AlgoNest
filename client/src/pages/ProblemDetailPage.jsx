@@ -35,6 +35,16 @@ const ProblemDetailPage = () => {
     // New V2 states
     const [hints, setHints] = useState([]);
     const [loadingHint, setLoadingHint] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
     
     const { authUser } = useContext(AuthContext);
     const { id: problemId } = useParams();
@@ -227,8 +237,8 @@ const ProblemDetailPage = () => {
                 </div> 
             )}
 
-            <PanelGroup direction="horizontal" className="p-4 h-[calc(100vh-64px)] text-slate-800 dark:text-white bg-background transition-colors duration-200">
-                <Panel defaultSize={50} minSize={30} className="pr-4">
+            <PanelGroup direction={isMobile ? "vertical" : "horizontal"} className="p-4 h-[calc(100vh-64px)] text-slate-800 dark:text-white bg-background transition-colors duration-200">
+                <Panel defaultSize={50} minSize={30} className={isMobile ? "pb-4" : "pr-4"}>
                     <div className="flex flex-col h-full">
                         <div className="flex items-center justify-between">
                             <div>
@@ -385,9 +395,9 @@ const ProblemDetailPage = () => {
                     </div>
                 </Panel>
                 
-                <PanelResizeHandle className="w-1.5 bg-purple-100 dark:bg-purple-950 hover:bg-purple-500 transition-colors" />
+                <PanelResizeHandle className={`${isMobile ? "h-1.5 w-full" : "w-1.5 h-full"} bg-purple-100 dark:bg-purple-950 hover:bg-purple-500 transition-colors`} />
 
-                <Panel defaultSize={50} minSize={30} className="pl-4">
+                <Panel defaultSize={50} minSize={30} className={isMobile ? "pt-4" : "pl-4"}>
                     <div className="flex flex-col h-full">
                         <div className="flex justify-end items-center mb-3">
                             <select 
