@@ -12,11 +12,11 @@ import ProblemDetailPage from './pages/ProblemDetailPage';
 import AdminProblemsListPage from './pages/AdminProblemsListPage';
 import EditProblemPage from './pages/EditProblemPage';
 
-// New V2 Pages
 import DashboardPage from './pages/DashboardPage';
 import ProfilePage from './pages/ProfilePage';
 import PairProgrammingPage from './pages/PairProgrammingPage';
 import InterviewRoomPage from './pages/InterviewRoomPage';
+import { CursorTrail } from './components/CursorTrail';
 
 const HomePage = () => {
   return (
@@ -99,6 +99,7 @@ const MainLayout = () => {
         ? 'bg-gradient-to-b from-[#0F0D1E] via-[#16122C] to-[#0A0714]' 
         : 'bg-gradient-to-b from-[#F9F8FF] via-[#F2EEFE] to-[#E7E2FC]'
     }`}>
+      <CursorTrail />
       <Navbar />
       <div className="flex-1">
         <Outlet />
