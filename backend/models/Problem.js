@@ -26,6 +26,12 @@ const problemSchema = new mongoose.Schema({
         input: { type: String, required: true },
         output: { type: String, required: true }
     }],
+    solutions: {
+        cpp: { type: String },
+        python: { type: String },
+        java: { type: String },
+        explanation: { type: String }
+    }
 }, { timestamps: true });
 
 const Problem = mongoose.model('Problem', problemSchema);

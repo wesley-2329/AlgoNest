@@ -238,8 +238,9 @@ const ProblemDetailPage = () => {
                         </div>
 
                         <Tabs defaultValue="problem" className="w-full mt-6 flex flex-col flex-grow overflow-hidden">
-                            <TabsList className="grid w-full grid-cols-2 bg-purple-50/50 dark:bg-slate-950/40 border border-purple-100/50 dark:border-purple-950/30 p-1 rounded-xl">
+                            <TabsList className="grid w-full grid-cols-3 bg-purple-50/50 dark:bg-slate-950/40 border border-purple-100/50 dark:border-purple-950/30 p-1 rounded-xl">
                                 <TabsTrigger value="problem" className="rounded-lg font-bold py-1.5">Problem Statement</TabsTrigger>
+                                <TabsTrigger value="solutions" className="rounded-lg font-bold py-1.5">Official Solutions</TabsTrigger>
                                 <TabsTrigger value="submissions" className="rounded-lg font-bold py-1.5">My Submissions</TabsTrigger>
                             </TabsList>
                             
@@ -299,6 +300,53 @@ const ProblemDetailPage = () => {
                                         ))}
                                     </div> 
                                 )}
+                            </TabsContent>
+                            
+                            <TabsContent value="solutions" className="flex-grow overflow-y-auto mt-4 space-y-6 pr-1">
+                                <div className="bg-white dark:bg-slate-900/60 p-6 rounded-2xl border border-purple-100 dark:border-purple-950/30 shadow-xl shadow-purple-950/5">
+                                    <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Official Explanation</h2>
+                                    {problem.solutions?.explanation ? (
+                                        <div className="prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-350 text-xs leading-relaxed mb-6">
+                                            <p className="whitespace-pre-wrap">{problem.solutions.explanation}</p>
+                                        </div>
+                                    ) : (
+                                        <p className="text-slate-400 text-sm">No complexity breakdown or explanation loaded.</p>
+                                    )}
+
+                                    <div className="border-t border-purple-100 dark:border-purple-950/20 pt-6">
+                                        <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Code Implementations</h2>
+                                        {problem.solutions ? (
+                                            <div className="space-y-6">
+                                                {problem.solutions.cpp && (
+                                                    <div>
+                                                        <h3 className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-2">C++ Solution</h3>
+                                                        <pre className="bg-slate-950 text-purple-200 p-4 rounded-xl border border-purple-900/30 font-mono text-xs overflow-x-auto">
+                                                            <code>{problem.solutions.cpp}</code>
+                                                        </pre>
+                                                    </div>
+                                                )}
+                                                {problem.solutions.python && (
+                                                    <div>
+                                                        <h3 className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-2">Python Solution</h3>
+                                                        <pre className="bg-slate-950 text-purple-200 p-4 rounded-xl border border-purple-900/30 font-mono text-xs overflow-x-auto">
+                                                            <code>{problem.solutions.python}</code>
+                                                        </pre>
+                                                    </div>
+                                                )}
+                                                {problem.solutions.java && (
+                                                    <div>
+                                                        <h3 className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-2">Java Solution</h3>
+                                                        <pre className="bg-slate-950 text-purple-200 p-4 rounded-xl border border-purple-900/30 font-mono text-xs overflow-x-auto">
+                                                            <code>{problem.solutions.java}</code>
+                                                        </pre>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <p className="text-slate-400 text-sm">No code implementations loaded.</p>
+                                        )}
+                                    </div>
+                                </div>
                             </TabsContent>
                             
                             <TabsContent value="submissions" className="flex-grow overflow-hidden flex flex-col mt-4">
