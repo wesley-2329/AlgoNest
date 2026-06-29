@@ -16,7 +16,7 @@ axios.defaults.withCredentials = true;
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme"> {/* Wrap here */}
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme"> {/* Wrap here */}
         <App />
       </ThemeProvider>
     </AuthProvider>
