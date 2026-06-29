@@ -1,3 +1,4 @@
+// client/src/pages/PairProgrammingPage.jsx
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -6,7 +7,7 @@ import Editor from '@monaco-editor/react';
 import { AuthContext } from '../context/AuthContext';
 import { Button } from "@/components/ui/button";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { ThemeProvider, useTheme } from "@/components/ThemeProvider";
+import { useTheme } from "@/components/ThemeProvider";
 
 const PairProgrammingPage = () => {
     const { roomId } = useParams();
@@ -111,11 +112,6 @@ const PairProgrammingPage = () => {
                 setChatMessages(prev => [...prev, chatMsg]);
             });
 
-            // Listen to other user joining
-            socket.on('user-joined', ({ username }) => {
-                console.log(`${username} joined room`);
-            });
-
             return () => {
                 socket.disconnect();
             };
@@ -139,7 +135,7 @@ const PairProgrammingPage = () => {
                             cursor.column + 1
                         ),
                         options: {
-                            className: 'bg-purple-500 w-[2px] animate-pulse',
+                            className: 'bg-purple-600 w-[2px] animate-pulse',
                             hoverMessage: { value: username }
                         }
                     });
@@ -236,71 +232,71 @@ const PairProgrammingPage = () => {
         }
     };
 
-    if (!authUser) return <div className="text-center pt-20 text-white">Please log in.</div>;
+    if (!authUser) return <div className="text-center pt-20 text-purple-600 font-bold">Please log in.</div>;
 
     // LANDING VIEW (Room creation/list)
     if (!roomId) {
         return (
-            <div className="max-w-6xl mx-auto px-4 py-12 text-white">
-                <h1 className="text-4xl font-extrabold mb-8 bg-gradient-to-r from-purple-400 to-violet-200 bg-clip-text text-transparent">
-                    Pair Programming Workspace
+            <div className="max-w-6xl mx-auto px-4 py-12 text-slate-800 dark:text-white">
+                <h1 className="text-4xl font-extrabold mb-8 text-slate-900 dark:text-white">
+                    Pair Programming Rooms
                 </h1>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {/* Create Room Form */}
-                    <div className="bg-white/5 rounded-2xl p-8 border border-white/10 shadow-xl">
-                        <h2 className="text-2xl font-bold mb-6">Create Collaborative Session</h2>
+                    <div className="bg-white dark:bg-slate-900/60 rounded-2xl p-8 border border-purple-100 dark:border-purple-950/30 shadow-xl shadow-purple-950/5">
+                        <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Create Collaborative Session</h2>
                         <form onSubmit={handleCreateRoom} className="space-y-6">
                             <div>
-                                <label className="block text-sm font-semibold mb-2">Room Title</label>
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Room Title</label>
                                 <input 
                                     type="text" 
                                     value={newRoomTitle}
                                     onChange={(e) => setNewRoomTitle(e.target.value)}
-                                    placeholder="Enter room title..."
-                                    className="w-full px-4 py-2 border border-white/10 rounded-lg text-gray-900 bg-white"
+                                    placeholder="Sync Session Name"
+                                    className="w-full px-4 py-2.5 border border-purple-100 dark:border-purple-900/35 text-slate-900 dark:text-white bg-white dark:bg-slate-950 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/80 text-sm"
                                     required
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-semibold mb-2">Select Target Problem</label>
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Select Target Problem</label>
                                 <select 
                                     value={selectedProblemId}
                                     onChange={(e) => setSelectedProblemId(e.target.value)}
-                                    className="w-full px-4 py-2 border border-white/10 rounded-lg text-gray-900 bg-white"
+                                    className="w-full px-4 py-2.5 border border-purple-100 dark:border-purple-900/35 text-slate-900 dark:text-white bg-white dark:bg-slate-950 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/80 text-sm"
                                 >
                                     {problems.map(p => (
                                         <option key={p._id} value={p._id}>{p.title} ({p.difficulty})</option>
                                     ))}
                                 </select>
                             </div>
-                            <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 font-bold py-2 rounded-lg">
+                            <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 font-bold py-2.5 rounded-xl shadow-md shadow-purple-600/10">
                                 Create Room
                             </Button>
                         </form>
                     </div>
 
                     {/* Active Rooms List */}
-                    <div className="bg-white/5 rounded-2xl p-8 border border-white/10 shadow-xl flex flex-col">
-                        <h2 className="text-2xl font-bold mb-6">Active Coding Rooms</h2>
+                    <div className="bg-white dark:bg-slate-900/60 rounded-2xl p-8 border border-purple-100 dark:border-purple-950/30 shadow-xl shadow-purple-950/5 flex flex-col">
+                        <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Active Coding Rooms</h2>
                         {loadingRooms ? (
-                            <p className="text-gray-400">Loading active sessions...</p>
+                            <p className="text-slate-400 font-bold animate-pulse">Loading active sessions...</p>
                         ) : rooms.length > 0 ? (
                             <div className="space-y-4 overflow-y-auto max-h-[350px] pr-2">
                                 {rooms.map(room => (
-                                    <div key={room.roomId} className="flex justify-between items-center p-4 bg-white/5 rounded-xl border border-white/5 hover:border-white/20 transition-all">
+                                    <div key={room.roomId} className="flex justify-between items-center p-4 bg-purple-50/30 dark:bg-slate-950/20 rounded-xl border border-purple-100/50 hover:border-purple-300 dark:hover:border-purple-800 transition-all">
                                         <div>
-                                            <h4 className="font-bold">{room.title}</h4>
-                                            <p className="text-xs text-purple-200 mt-1">Problem: {room.problemId?.title || 'General Sandbox'}</p>
+                                            <h4 className="font-bold text-slate-800 dark:text-slate-200 text-sm">{room.title}</h4>
+                                            <p className="text-xs text-purple-600 dark:text-purple-400 mt-1 font-semibold">Problem: {room.problemId?.title || 'General Sandbox'}</p>
                                         </div>
-                                        <Button onClick={() => navigate(`/pair-programming/${room.roomId}`)} variant="secondary" size="sm">
+                                        <Button onClick={() => navigate(`/pair-programming/${room.roomId}`)} variant="outline" size="sm" className="border-purple-200 text-purple-700 hover:bg-purple-50 text-xs font-bold rounded-xl h-8">
                                             Join Room
                                         </Button>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <p className="text-gray-400 my-auto text-center">No active rooms found. Start one above!</p>
+                            <p className="text-slate-400 my-auto text-center text-sm font-semibold py-8">No active rooms found. Start one above!</p>
                         )}
                     </div>
                 </div>
@@ -310,23 +306,23 @@ const PairProgrammingPage = () => {
 
     // WORKSPACE VIEW (Collaborative editor)
     return (
-        <div className="h-[calc(100vh-64px)] flex flex-col bg-background text-foreground">
+        <div className="h-[calc(100vh-64px)] flex flex-col bg-background text-slate-800 dark:text-white transition-colors duration-200">
             <PanelGroup direction="horizontal" className="flex-1">
                 {/* Left Side: Problem Statement */}
-                <Panel defaultSize={30} minSize={20} className="border-r flex flex-col h-full bg-card/10">
+                <Panel defaultSize={30} minSize={20} className="border-r border-purple-100 dark:border-purple-950/20 flex flex-col h-full bg-purple-50/10 dark:bg-slate-950/5">
                     <div className="p-6 overflow-y-auto flex-1">
                         {roomInfo?.problemId ? (
                             <div>
-                                <h2 className="text-2xl font-extrabold mb-2">{roomInfo.problemId.title}</h2>
-                                <span className={`px-2 py-1 text-xs font-bold rounded ${roomInfo.problemId.difficulty === 'Easy' ? 'bg-green-200 text-green-800' : roomInfo.problemId.difficulty === 'Medium' ? 'bg-yellow-200 text-yellow-800' : 'bg-red-200 text-red-800'}`}>
+                                <h2 className="text-2xl font-extrabold mb-2 text-slate-900 dark:text-white">{roomInfo.problemId.title}</h2>
+                                <span className={`px-2.5 py-0.5 text-xs font-bold rounded-full ${roomInfo.problemId.difficulty === 'Easy' ? 'bg-green-100 text-green-700' : roomInfo.problemId.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>
                                     {roomInfo.problemId.difficulty}
                                 </span>
-                                <div className="mt-6 prose dark:prose-invert text-sm max-w-none">
+                                <div className="mt-6 prose dark:prose-invert text-sm max-w-none text-slate-700 dark:text-slate-300 leading-relaxed">
                                     <p className="whitespace-pre-wrap">{roomInfo.problemId.statement}</p>
                                 </div>
                             </div>
                         ) : (
-                            <div className="text-center pt-20 text-gray-400">
+                            <div className="text-center pt-20 text-slate-400">
                                 <h3>General Collaboration Sandbox</h3>
                                 <p className="text-xs mt-2">Write, edit and execute code together.</p>
                             </div>
@@ -334,16 +330,16 @@ const PairProgrammingPage = () => {
                     </div>
                 </Panel>
 
-                <PanelResizeHandle className="w-1.5 bg-border hover:bg-purple-600 transition-colors" />
+                <PanelResizeHandle className="w-1.5 bg-purple-100 dark:bg-purple-950 hover:bg-purple-500 transition-colors" />
 
                 {/* Middle: Editor & Run Console */}
                 <Panel defaultSize={50} minSize={30} className="flex flex-col h-full">
-                    <div className="flex justify-between items-center p-3 border-b bg-card/20">
-                        <span className="text-sm font-bold text-purple-200">Room: {roomInfo?.title}</span>
+                    <div className="flex justify-between items-center p-3 border-b border-purple-100 dark:border-purple-950/20 bg-purple-50/20 dark:bg-slate-900/10">
+                        <span className="text-sm font-bold text-purple-700 dark:text-purple-300">Room: {roomInfo?.title}</span>
                         <select 
                             value={language} 
                             onChange={handleLanguageChange} 
-                            className="p-1 border rounded bg-card text-sm text-foreground focus:outline-none"
+                            className="p-1 border border-purple-100 dark:border-purple-950 text-xs rounded-lg bg-card text-foreground focus:outline-none"
                         >
                             <option value="cpp">C++</option>
                             <option value="python">Python</option>
@@ -368,13 +364,13 @@ const PairProgrammingPage = () => {
                             />
                         </Panel>
 
-                        <PanelResizeHandle className="h-1.5 bg-border hover:bg-purple-600 transition-colors" />
+                        <PanelResizeHandle className="h-1.5 bg-purple-100 dark:bg-purple-950 hover:bg-purple-500 transition-colors" />
 
                         {/* Custom Run Console */}
-                        <Panel defaultSize={30} minSize={20} className="border-t bg-card/10 flex flex-col">
-                            <div className="p-2 border-b bg-card/20 flex justify-between items-center">
-                                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Collaborative Console</span>
-                                <Button size="sm" onClick={handleRunCode} disabled={isRunning} className="bg-purple-600 hover:bg-purple-700 h-7 text-xs font-bold text-white">
+                        <Panel defaultSize={30} minSize={20} className="border-t border-purple-100 dark:border-purple-950/20 bg-purple-50/10 dark:bg-slate-900/10 flex flex-col">
+                            <div className="p-2 border-b border-purple-100 dark:border-purple-950/10 bg-purple-50/20 dark:bg-slate-900/20 flex justify-between items-center">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Collaborative Console</span>
+                                <Button size="sm" onClick={handleRunCode} disabled={isRunning} className="bg-purple-600 hover:bg-purple-700 h-7 text-xs font-bold text-white rounded-lg px-3 shadow-md">
                                     {isRunning ? 'Running...' : 'Run Code'}
                                 </Button>
                             </div>
@@ -383,42 +379,42 @@ const PairProgrammingPage = () => {
                                     value={customInput} 
                                     onChange={(e) => setCustomInput(e.target.value)} 
                                     placeholder="Enter input here..."
-                                    className="w-full h-full p-2 border rounded font-mono text-xs resize-none bg-background text-foreground"
+                                    className="w-full h-full p-2 border border-purple-100 dark:border-purple-900/35 rounded-xl font-mono text-xs bg-background text-foreground focus:outline-none resize-none"
                                 />
-                                <pre className="w-full h-full p-2 border rounded bg-muted text-foreground font-mono text-xs overflow-y-auto whitespace-pre-wrap">
-                                    {runOutput || 'Run results will appear here...'}
+                                <pre className="w-full h-full p-2 border border-purple-100 dark:border-purple-900/35 rounded-xl bg-slate-950 text-purple-200 font-mono text-xs overflow-y-auto whitespace-pre-wrap">
+                                    {runOutput || 'Execution outputs appear here...'}
                                 </pre>
                             </div>
                         </Panel>
                     </PanelGroup>
                 </Panel>
 
-                <PanelResizeHandle className="w-1.5 bg-border hover:bg-purple-600 transition-colors" />
+                <PanelResizeHandle className="w-1.5 bg-purple-100 dark:bg-purple-950 hover:bg-purple-500 transition-colors" />
 
                 {/* Right Side: Chat Panel */}
-                <Panel defaultSize={20} minSize={15} className="border-l flex flex-col h-full bg-card/10">
-                    <div className="p-3 border-b bg-card/20 font-bold text-sm tracking-wider uppercase text-muted-foreground">
-                        Group Chat
+                <Panel defaultSize={20} minSize={15} className="border-l border-purple-100 dark:border-purple-950/20 flex flex-col h-full bg-purple-50/10 dark:bg-slate-950/5">
+                    <div className="p-3 border-b border-purple-100 dark:border-purple-950/20 bg-purple-50/20 dark:bg-slate-900/20 font-bold text-xs uppercase tracking-wider text-slate-400">
+                        Room Chat
                     </div>
                     {/* Chat Messages */}
                     <div className="flex-grow p-4 overflow-y-auto space-y-3 flex flex-col">
                         {chatMessages.map((msg, i) => (
-                            <div key={i} className="flex flex-col bg-white/5 rounded-lg p-2.5 max-w-[90%] border border-white/5 self-start">
-                                <span className="text-xs font-bold text-purple-300 font-mono mb-1">{msg.username}</span>
-                                <span className="text-xs text-gray-200 break-words">{msg.message}</span>
+                            <div key={i} className="flex flex-col bg-white dark:bg-slate-900/60 rounded-xl p-2.5 max-w-[90%] border border-purple-100 dark:border-purple-950/20 self-start shadow-sm shadow-purple-950/5">
+                                <span className="text-[10px] font-bold text-purple-700 dark:text-purple-300 font-mono mb-1">{msg.username}</span>
+                                <span className="text-xs text-slate-800 dark:text-slate-200 break-words leading-relaxed">{msg.message}</span>
                             </div>
                         ))}
                     </div>
                     {/* Input message form */}
-                    <form onSubmit={handleSendMessage} className="p-3 border-t bg-card/20 flex gap-2">
+                    <form onSubmit={handleSendMessage} className="p-3 border-t border-purple-100 dark:border-purple-950/20 bg-purple-50/20 dark:bg-slate-900/20 flex gap-2">
                         <input 
                             type="text" 
                             value={newMessage}
                             onChange={(e) => setNewMessage(e.target.value)}
-                            placeholder="Type message..."
-                            className="flex-1 px-3 py-1.5 border rounded-lg text-xs bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-purple-500"
+                            placeholder="Type a message..."
+                            className="flex-1 px-3 py-1.5 border border-purple-100 dark:border-purple-900/35 rounded-xl text-xs bg-background text-foreground focus:outline-none"
                         />
-                        <Button type="submit" size="sm" className="bg-purple-600 hover:bg-purple-700 text-xs text-white">
+                        <Button type="submit" size="sm" className="bg-purple-600 hover:bg-purple-700 text-xs text-white font-bold h-8 rounded-xl px-3.5 shadow-md">
                             Send
                         </Button>
                     </form>

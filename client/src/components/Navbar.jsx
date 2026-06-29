@@ -1,29 +1,22 @@
-import React, { useContext, useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import axios from 'axios';
-import { ThemeToggle } from './ThemeToggle';
 import { Button } from "@/components/ui/button";
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
-    const { authUser, setAuthUser } = useContext(AuthContext);
-    const [isLoading, setIsLoading] = useState(false);
+    const { authUser, logout, isLoading } = useContext(AuthContext);
     const [showDropdown, setShowDropdown] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const navigate = useNavigate();
 
     const handleLogout = async () => {
-        setIsLoading(true);
         try {
-            await axios.post('/api/auth/logout');
-            setAuthUser(null);
+            await logout();
+            setShowDropdown(false);
             navigate('/login');
         } catch (error) {
-            console.error('Logout failed', error);
-        } finally {
-            setIsLoading(false);
-            setShowDropdown(false);
-            setShowMobileMenu(false);
+            console.error('Logout error:', error);
         }
     };
 
@@ -36,26 +29,25 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="bg-gradient-to-r from-purple-700 to-violet-400 dark:from-violet-900 dark:to-violet-700 shadow-md">
+        <nav className="sticky top-0 z-50 bg-white/85 dark:bg-slate-950/85 backdrop-blur-md border-b border-purple-100/80 dark:border-purple-950/30 transition-colors duration-300 shadow-sm shadow-purple-950/5">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center py-3">
+                <div className="flex justify-between items-center h-16">
                     {/* Left side - Logo and Problems link */}
-                    <div className="flex items-center space-x-8">
+                    <div className="flex items-center space-x-10">
                         <Link
                             to="/"
-                            className="text-2xl font-extrabold text-white hover:text-gray-100 transition-colors"
+                            className="text-2xl font-black text-purple-900 dark:text-purple-300 tracking-tight hover:opacity-90 transition-opacity"
                             style={{
-                                fontFamily: 'Consolas, Monaco, monospace',
-                                letterSpacing: '-0.5px'
+                                fontFamily: 'Outfit, system-ui, sans-serif',
                             }}
                         >
-                            AlgoNest
+                            Algo<span className="text-purple-600 dark:text-purple-400">Nest</span>
                         </Link>
                         
-                        <div className="hidden md:flex items-center space-x-6">
+                        <div className="hidden md:flex items-center space-x-8">
                             <Link 
                                 to="/problems" 
-                                className="text-white hover:text-gray-100 font-medium transition-colors"
+                                className="text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 font-semibold text-sm transition-colors"
                             >
                                 Problems
                             </Link>
@@ -63,19 +55,19 @@ const Navbar = () => {
                                 <>
                                     <Link 
                                         to="/dashboard" 
-                                        className="text-white hover:text-gray-100 font-medium transition-colors"
+                                        className="text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 font-semibold text-sm transition-colors"
                                     >
                                         Dashboard
                                     </Link>
                                     <Link 
                                         to="/pair-programming" 
-                                        className="text-white hover:text-gray-100 font-medium transition-colors"
+                                        className="text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 font-semibold text-sm transition-colors"
                                     >
                                         Pair Programming
                                     </Link>
                                     <Link 
                                         to="/interview" 
-                                        className="text-white hover:text-gray-100 font-medium transition-colors"
+                                        className="text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 font-semibold text-sm transition-colors"
                                     >
                                         Interview Prep
                                     </Link>
@@ -94,7 +86,7 @@ const Navbar = () => {
                                 variant="ghost"
                                 size="icon"
                                 onClick={toggleMobileMenu}
-                                className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-gray-100 hover:bg-white/10 focus:outline-none"
+                                className="text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-900 focus:outline-none"
                             >
                                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     {showMobileMenu ? (
@@ -113,7 +105,7 @@ const Navbar = () => {
                                     {authUser.role === 'admin' && (
                                         <Link 
                                             to="/admin/problems" 
-                                            className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-purple-700 dark:text-violet-900 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+                                            className="px-3.5 py-1.5 text-xs font-bold rounded-lg border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/20 transition-all"
                                         >
                                             Admin Panel
                                         </Link>
@@ -121,71 +113,37 @@ const Navbar = () => {
                                     
                                     {/* User dropdown menu */}
                                     <div className="relative">
-                                        <Button 
-                                            variant="ghost"
+                                        <button 
                                             onClick={toggleDropdown}
-                                            className="flex items-center space-x-2 focus:outline-none text-white hover:bg-white/10"
+                                            className="flex items-center space-x-2 focus:outline-none text-slate-700 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 font-semibold text-sm transition-colors py-1.5 px-3 rounded-lg hover:bg-purple-50/50 dark:hover:bg-slate-900"
                                         >
-                                            <div className="flex items-center">
-                                                {authUser.avatar ? (
-                                                    <img 
-                                                        src={authUser.avatar} 
-                                                        alt={authUser.username} 
-                                                        className="h-8 w-8 rounded-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
-                                                        <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                                        </svg>
-                                                    </div>
-                                                )}
+                                            <div className="h-8 w-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-purple-600/10">
+                                                {authUser.username[0].toUpperCase()}
                                             </div>
-                                            <span className="text-sm font-medium text-white">
-                                                {authUser.username}
-                                            </span>
-                                            <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <span>{authUser.username}</span>
+                                            <svg className="h-4 w-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                             </svg>
-                                        </Button>
+                                        </button>
                                         
                                         {showDropdown && (
-                                            <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-violet-800 ring-1 ring-black dark:ring-violet-600 ring-opacity-5 focus:outline-none z-50">
+                                            <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-xl shadow-xl py-1.5 bg-white dark:bg-slate-900 border border-purple-100 dark:border-purple-950/30 ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                                                 <Link
                                                     to="/profile"
-                                                    className="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-violet-700"
+                                                    className="block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-purple-950/20"
                                                     onClick={() => setShowDropdown(false)}
                                                 >
                                                     <div className="flex items-center">
-                                                        <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                                        </svg>
-                                                        Profile
+                                                        👤 Profile
                                                     </div>
                                                 </Link>
-                                                <Link
-                                                    to="/settings"
-                                                    className="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-violet-700"
-                                                    onClick={() => setShowDropdown(false)}
-                                                >
-                                                    <div className="flex items-center">
-                                                        <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                        </svg>
-                                                        Settings
-                                                    </div>
-                                                </Link>
-                                                <div className="border-t border-gray-200 dark:border-violet-600 my-1"></div>
+                                                <div className="border-t border-purple-100 dark:border-purple-950/30 my-1"></div>
                                                 <button
                                                     onClick={handleLogout}
                                                     disabled={isLoading}
-                                                    className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-violet-700 flex items-center"
+                                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-purple-50 dark:hover:bg-purple-950/20 flex items-center"
                                                 >
-                                                    <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                                    </svg>
-                                                    {isLoading ? 'Logging out...' : 'Logout'}
+                                                    🚪 {isLoading ? 'Logging out...' : 'Logout'}
                                                 </button>
                                             </div>
                                         )}
@@ -195,113 +153,92 @@ const Navbar = () => {
                                 <>
                                     <Link 
                                         to="/login" 
-                                        className="px-3 py-1.5 text-sm font-medium rounded-md text-white hover:text-gray-100 border border-white transition-colors"
+                                        className="px-4 py-1.5 text-sm font-semibold rounded-xl text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-900 border border-purple-100 dark:border-purple-950/30 transition-colors"
                                     >
                                         Login
                                     </Link>
                                     <Link 
                                         to="/register" 
-                                        className="px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-purple-700 dark:text-violet-900 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+                                        className="px-4 py-1.5 text-sm font-semibold rounded-xl text-white bg-purple-600 hover:bg-purple-700 transition-colors"
                                     >
-                                        Register
+                                        Sign Up
                                     </Link>
                                 </>
                             )}
                         </div>
                     </div>
                 </div>
-
-                {/* Mobile Navigation */}
-                <div className={`md:hidden ${showMobileMenu ? 'block' : 'hidden'}`}>
-                    <div className="pt-2 pb-3 space-y-1">
-                        <Link
-                            to="/problems"
-                            className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-100 hover:bg-white/10"
-                            onClick={() => setShowMobileMenu(false)}
-                        >
-                            Problems
-                        </Link>
-                        {authUser && (
-                            <>
-                                <Link
-                                    to="/dashboard"
-                                    className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-100 hover:bg-white/10"
-                                    onClick={() => setShowMobileMenu(false)}
-                                >
-                                    Dashboard
-                                </Link>
-                                <Link
-                                    to="/pair-programming"
-                                    className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-100 hover:bg-white/10"
-                                    onClick={() => setShowMobileMenu(false)}
-                                >
-                                    Pair Programming
-                                </Link>
-                                <Link
-                                    to="/interview"
-                                    className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-100 hover:bg-white/10"
-                                    onClick={() => setShowMobileMenu(false)}
-                                >
-                                    Interview Prep
-                                </Link>
-                                {authUser.role === 'admin' && (
-                                    <Link
-                                        to="/admin/problems"
-                                        className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-100 hover:bg-white/10"
-                                        onClick={() => setShowMobileMenu(false)}
-                                    >
-                                        Admin Panel
-                                    </Link>
-                                )}
-                                <Link
-                                    to="/profile"
-                                    className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-100 hover:bg-white/10"
-                                    onClick={() => setShowMobileMenu(false)}
-                                >
-                                    Profile
-                                </Link>
-                                <Link
-                                    to="/settings"
-                                    className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-100 hover:bg-white/10"
-                                    onClick={() => setShowMobileMenu(false)}
-                                >
-                                    Settings
-                                </Link>
-                                <button
-                                    onClick={handleLogout}
-                                    disabled={isLoading}
-                                    className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-100 hover:bg-white/10 flex items-center"
-                                >
-                                    <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                    </svg>
-                                    {isLoading ? 'Logging out...' : 'Logout'}
-                                </button>
-                            </>
-                        )}
-                        {!authUser && (
-                            <div className="pt-4 pb-3 border-t border-white/20">
-                                <div className="flex items-center space-x-3 px-3">
-                                    <Link
-                                        to="/login"
-                                        className="w-full px-3 py-2 rounded-md text-center text-base font-medium text-white hover:text-gray-100 border border-white"
-                                        onClick={() => setShowMobileMenu(false)}
-                                    >
-                                        Login
-                                    </Link>
-                                    <Link
-                                        to="/register"
-                                        className="w-full px-3 py-2 rounded-md text-center text-base font-medium text-purple-700 dark:text-violet-900 bg-white hover:bg-gray-100"
-                                        onClick={() => setShowMobileMenu(false)}
-                                    >
-                                        Register
-                                    </Link>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
             </div>
+            
+            {/* Mobile Navigation */}
+            {showMobileMenu && (
+                <div className="md:hidden border-t border-purple-100 dark:border-purple-950/30 bg-white/95 dark:bg-slate-950/95 py-3 px-4 space-y-2">
+                    <Link
+                        to="/problems"
+                        className="block px-3 py-2 rounded-lg text-base font-semibold text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-900"
+                        onClick={() => setShowMobileMenu(false)}
+                    >
+                        Problems
+                    </Link>
+                    {authUser && (
+                        <>
+                            <Link
+                                to="/dashboard"
+                                className="block px-3 py-2 rounded-lg text-base font-semibold text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-900"
+                                onClick={() => setShowMobileMenu(false)}
+                            >
+                                Dashboard
+                            </Link>
+                            <Link
+                                to="/pair-programming"
+                                className="block px-3 py-2 rounded-lg text-base font-semibold text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-900"
+                                onClick={() => setShowMobileMenu(false)}
+                            >
+                                Pair Programming
+                            </Link>
+                            <Link
+                                to="/interview"
+                                className="block px-3 py-2 rounded-lg text-base font-semibold text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-900"
+                                onClick={() => setShowMobileMenu(false)}
+                            >
+                                Interview Prep
+                            </Link>
+                            <Link
+                                to="/profile"
+                                className="block px-3 py-2 rounded-lg text-base font-semibold text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-900"
+                                onClick={() => setShowMobileMenu(false)}
+                            >
+                                Profile
+                            </Link>
+                            <div className="border-t border-purple-100 dark:border-purple-950/30 my-2"></div>
+                            <button
+                                onClick={handleLogout}
+                                className="w-full text-left px-3 py-2 rounded-lg text-base font-semibold text-red-600 hover:bg-purple-50 dark:hover:bg-slate-900"
+                            >
+                                Logout
+                            </button>
+                        </>
+                    )}
+                    {!authUser && (
+                        <div className="pt-2 flex flex-col gap-2">
+                            <Link
+                                to="/login"
+                                className="w-full text-center px-4 py-2 rounded-lg text-sm font-semibold border border-purple-100 text-slate-700"
+                                onClick={() => setShowMobileMenu(false)}
+                            >
+                                Login
+                            </Link>
+                            <Link
+                                to="/register"
+                                className="w-full text-center px-4 py-2 rounded-lg text-sm font-semibold bg-purple-600 text-white"
+                                onClick={() => setShowMobileMenu(false)}
+                            >
+                                Sign Up
+                            </Link>
+                        </div>
+                    )}
+                </div>
+            )}
         </nav>
     );
 };

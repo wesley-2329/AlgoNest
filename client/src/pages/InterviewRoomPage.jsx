@@ -1,3 +1,4 @@
+// client/src/pages/InterviewRoomPage.jsx
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -207,7 +208,7 @@ const InterviewRoomPage = () => {
             });
             navigate(`/interview/${res.data.sessionId}`);
         } catch (err) {
-            alert('Failed to start interview: ' + err.response?.data?.message || err.message);
+            alert('Failed to start interview: ' + (err.response?.data?.message || err.message));
         }
     };
 
@@ -295,69 +296,69 @@ const InterviewRoomPage = () => {
         }
     };
 
-    if (!authUser) return <div className="text-center pt-20 text-white">Please log in.</div>;
+    if (!authUser) return <div className="text-center pt-20 text-purple-600 font-bold">Please log in.</div>;
 
     // LANDING VIEW (Session list/creation)
     if (!sessionId) {
         return (
-            <div className="max-w-6xl mx-auto px-4 py-12 text-white">
-                <h1 className="text-4xl font-extrabold mb-8 bg-gradient-to-r from-purple-400 to-violet-200 bg-clip-text text-transparent">
-                    Interview Preparation Room
+            <div className="max-w-6xl mx-auto px-4 py-12 text-slate-800 dark:text-white">
+                <h1 className="text-4xl font-extrabold mb-8 text-slate-900 dark:text-white">
+                    Interview Room Workspace
                 </h1>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                    {/* Create Interview Session (Interviewer role setup) */}
-                    <div className="bg-white/5 rounded-2xl p-8 border border-white/10 shadow-xl">
-                        <h2 className="text-2xl font-bold mb-6">Initialize New Interview Session</h2>
+                    {/* Create Interview Session */}
+                    <div className="bg-white dark:bg-slate-900/60 rounded-2xl p-8 border border-purple-100 dark:border-purple-950/30 shadow-xl shadow-purple-950/5">
+                        <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Initialize New Interview Session</h2>
                         <form onSubmit={handleCreateSession} className="space-y-6">
                             <div>
-                                <label className="block text-sm font-semibold mb-2">Candidate Email Address</label>
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Candidate Email Address</label>
                                 <input 
                                     type="email" 
                                     value={candidateEmail}
                                     onChange={(e) => setCandidateEmail(e.target.value)}
                                     placeholder="candidate@email.com"
-                                    className="w-full px-4 py-2 border border-white/10 rounded-lg text-gray-900 bg-white"
+                                    className="w-full px-4 py-2.5 border border-purple-100 dark:border-purple-900/35 text-slate-900 dark:text-white bg-white dark:bg-slate-950 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/80 text-sm"
                                     required
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-semibold mb-2">Assign First Problem</label>
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Assign First Problem</label>
                                 <select 
                                     value={selectedProblemId}
                                     onChange={(e) => setSelectedProblemId(e.target.value)}
-                                    className="w-full px-4 py-2 border border-white/10 rounded-lg text-gray-900 bg-white"
+                                    className="w-full px-4 py-2.5 border border-purple-100 dark:border-purple-900/35 text-slate-900 dark:text-white bg-white dark:bg-slate-950 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/80 text-sm"
                                 >
                                     {problems.map(p => (
                                         <option key={p._id} value={p._id}>{p.title} ({p.difficulty})</option>
                                     ))}
                                 </select>
                             </div>
-                            <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 font-bold py-2 rounded-lg">
+                            <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 font-bold py-2.5 rounded-xl shadow-md shadow-purple-600/10">
                                 Start Interview Session
                             </Button>
                         </form>
                     </div>
 
                     {/* Interview History list */}
-                    <div className="bg-white/5 rounded-2xl p-8 border border-white/10 shadow-xl flex flex-col">
-                        <h2 className="text-2xl font-bold mb-6">My Scheduled Sessions</h2>
+                    <div className="bg-white dark:bg-slate-900/60 rounded-2xl p-8 border border-purple-100 dark:border-purple-950/30 shadow-xl shadow-purple-950/5 flex flex-col">
+                        <h2 className="text-xl font-bold mb-6 text-slate-900 dark:text-white">Scheduled Sessions</h2>
                         {loadingSessions ? (
-                            <p className="text-gray-400">Loading interview sessions...</p>
+                            <p className="text-slate-400 font-bold animate-pulse">Loading interview sessions...</p>
                         ) : interviews.length > 0 ? (
                             <div className="space-y-4 overflow-y-auto max-h-[350px] pr-2">
                                 {interviews.map(session => (
-                                    <div key={session.sessionId} className="flex justify-between items-center p-4 bg-white/5 rounded-xl border border-white/5 hover:border-white/20 transition-all">
+                                    <div key={session.sessionId} className="flex justify-between items-center p-4 bg-purple-50/30 dark:bg-slate-950/20 rounded-xl border border-purple-100/50 hover:border-purple-300 dark:hover:border-purple-800 transition-all">
                                         <div>
-                                            <h4 className="font-bold">Interviewer: {session.interviewerId?.username}</h4>
-                                            <p className="text-xs text-purple-200 mt-1">Candidate: {session.candidateId?.username}</p>
-                                            <p className="text-[10px] text-gray-400 mt-1">Problem: {session.problemId?.title || 'None assigned'}</p>
+                                            <h4 className="font-bold text-slate-800 dark:text-slate-200 text-sm">Interviewer: {session.interviewerId?.username}</h4>
+                                            <p className="text-xs text-purple-600 dark:text-purple-400 mt-1 font-semibold">Candidate: {session.candidateId?.username}</p>
+                                            <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Problem: {session.problemId?.title || 'None assigned'}</p>
                                         </div>
                                         <div className="flex flex-col items-end gap-2">
-                                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${session.status === 'completed' ? 'bg-green-500/20 text-green-300' : 'bg-blue-500/20 text-blue-300'}`}>
+                                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${session.status === 'completed' ? 'bg-green-500/20 text-green-700' : 'bg-blue-500/20 text-blue-700'}`}>
                                                 {session.status}
                                             </span>
-                                            <Button onClick={() => navigate(`/interview/${session.sessionId}`)} variant="secondary" size="xs" className="h-6 text-[10px]">
+                                            <Button onClick={() => navigate(`/interview/${session.sessionId}`)} variant="outline" size="sm" className="border-purple-200 text-purple-700 hover:bg-purple-50 text-[10px] h-7 rounded-xl font-bold">
                                                 Enter Room
                                             </Button>
                                         </div>
@@ -365,7 +366,7 @@ const InterviewRoomPage = () => {
                                 ))}
                             </div>
                         ) : (
-                            <p className="text-gray-400 my-auto text-center">No scheduled interviews found.</p>
+                            <p className="text-slate-400 my-auto text-center text-sm font-semibold py-8">No scheduled interviews found.</p>
                         )}
                     </div>
                 </div>
@@ -375,53 +376,53 @@ const InterviewRoomPage = () => {
 
     // WORKSPACE VIEW (Active Interview Room)
     return (
-        <div className="h-[calc(100vh-64px)] flex flex-col bg-background text-foreground text-white">
+        <div className="h-[calc(100vh-64px)] flex flex-col bg-background text-slate-800 dark:text-white transition-colors duration-200">
             <PanelGroup direction="horizontal" className="flex-1">
                 
                 {/* Left Panel: Problem & Revealed Hints */}
-                <Panel defaultSize={30} minSize={20} className="border-r flex flex-col h-full bg-card/10">
+                <Panel defaultSize={30} minSize={20} className="border-r border-purple-100 dark:border-purple-950/20 flex flex-col h-full bg-purple-50/10 dark:bg-slate-950/5">
                     <div className="p-6 overflow-y-auto flex-1 space-y-6">
                         {sessionInfo?.problemId ? (
                             <div>
-                                <h2 className="text-2xl font-extrabold mb-2">{sessionInfo.problemId.title}</h2>
-                                <span className={`px-2 py-1 text-xs font-bold rounded ${sessionInfo.problemId.difficulty === 'Easy' ? 'bg-green-200 text-green-800' : sessionInfo.problemId.difficulty === 'Medium' ? 'bg-yellow-200 text-yellow-800' : 'bg-red-200 text-red-800'}`}>
+                                <h2 className="text-2xl font-extrabold mb-2 text-slate-900 dark:text-white">{sessionInfo.problemId.title}</h2>
+                                <span className={`px-2.5 py-0.5 text-xs font-bold rounded-full ${sessionInfo.problemId.difficulty === 'Easy' ? 'bg-green-100 text-green-700' : sessionInfo.problemId.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>
                                     {sessionInfo.problemId.difficulty}
                                 </span>
-                                <div className="mt-6 prose dark:prose-invert text-sm max-w-none border-b border-white/10 pb-6">
+                                <div className="mt-6 prose dark:prose-invert text-sm max-w-none text-slate-700 dark:text-slate-355 border-b border-purple-100 dark:border-purple-950/20 pb-6 leading-relaxed">
                                     <p className="whitespace-pre-wrap">{sessionInfo.problemId.statement}</p>
                                 </div>
                             </div>
                         ) : (
-                            <div className="text-center pt-20 text-gray-400">
+                            <div className="text-center pt-20 text-slate-400">
                                 <h3>No Problem Assigned</h3>
                                 {role === 'interviewer' && <p className="text-xs mt-2">Assign one from the middle panel.</p>}
                             </div>
                         )}
 
-                        {/* Hints list (Visible to both interviewer and candidate if revealed) */}
+                        {/* Hints list */}
                         <div className="space-y-4">
-                            <h3 className="text-lg font-bold text-purple-300">Revealed Hints</h3>
+                            <h3 className="text-base font-bold text-purple-900 dark:text-purple-300">Revealed Clues</h3>
                             {availableHints.length > 0 ? (
                                 availableHints.map((hint, idx) => (
-                                    <div key={idx} className="bg-purple-950/20 border border-purple-500/10 p-3 rounded-lg text-xs leading-relaxed text-gray-200">
-                                        <span className="font-bold text-purple-300 block mb-1">Hint #{idx + 1}:</span>
+                                    <div key={idx} className="bg-white dark:bg-slate-900/60 border border-purple-100 dark:border-purple-950/20 p-4 rounded-xl shadow-sm text-xs leading-relaxed text-slate-700 dark:text-slate-300">
+                                        <span className="font-bold text-purple-700 dark:text-purple-400 block mb-1.5">Hint #{idx + 1}:</span>
                                         <p className="whitespace-pre-wrap">{hint}</p>
                                     </div>
                                 ))
                             ) : (
-                                <p className="text-xs text-gray-400">No hints revealed yet.</p>
+                                <p className="text-xs text-slate-400">No clues revealed yet.</p>
                             )}
                         </div>
                     </div>
                 </Panel>
 
-                <PanelResizeHandle className="w-1.5 bg-border hover:bg-purple-600 transition-colors" />
+                <PanelResizeHandle className="w-1.5 bg-purple-100 dark:bg-purple-950 hover:bg-purple-500 transition-colors" />
 
                 {/* Middle Panel: Monaco Editor & Local Execution */}
                 <Panel defaultSize={50} minSize={30} className="flex flex-col h-full">
                     {/* Header bar controls */}
-                    <div className="flex justify-between items-center p-3 border-b bg-card/20">
-                        <span className="text-sm font-bold text-purple-200">Role: <span className="capitalize">{role}</span></span>
+                    <div className="flex justify-between items-center p-3 border-b border-purple-100 dark:border-purple-950/20 bg-purple-50/20 dark:bg-slate-900/10">
+                        <span className="text-sm font-bold text-purple-700 dark:text-purple-300">Role: <span className="capitalize">{role}</span></span>
                         
                         <div className="flex items-center gap-3">
                             {role === 'interviewer' && (
@@ -429,17 +430,17 @@ const InterviewRoomPage = () => {
                                     <select 
                                         value={sessionInfo?.problemId?._id || ''} 
                                         onChange={handleProblemChange}
-                                        className="p-1 border rounded bg-card text-xs text-foreground focus:outline-none"
+                                        className="p-1 border border-purple-100 dark:border-purple-950 text-xs rounded-lg bg-card text-foreground focus:outline-none"
                                     >
                                         <option value="">-- Assign Problem --</option>
                                         {problems.map(p => (
                                             <option key={p._id} value={p._id}>{p.title}</option>
                                         ))}
                                     </select>
-                                    <Button size="xs" onClick={handleRevealHint} disabled={loadingHint} className="bg-purple-600 hover:bg-purple-700 h-7 text-xs font-bold text-white">
-                                        {loadingHint ? 'Generating Hint...' : `Reveal Hint #${hintsRevealed.length + 1}`}
+                                    <Button size="xs" onClick={handleRevealHint} disabled={loadingHint} className="bg-purple-600 hover:bg-purple-700 h-7 text-[11px] font-bold text-white rounded-lg px-3">
+                                        {loadingHint ? 'Generating Hint...' : `Hint #${hintsRevealed.length + 1}`}
                                     </Button>
-                                    <Button size="xs" onClick={handleToggleLock} className={`h-7 text-xs font-bold text-white ${isLocked ? 'bg-green-600 hover:bg-green-700' : 'bg-orange-600 hover:bg-orange-700'}`}>
+                                    <Button size="xs" onClick={handleToggleLock} className={`h-7 text-[11px] font-bold text-white rounded-lg px-3 ${isLocked ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-orange-600 hover:bg-orange-700'}`}>
                                         {isLocked ? 'Unlock Editor' : 'Lock Editor'}
                                     </Button>
                                 </>
@@ -448,7 +449,7 @@ const InterviewRoomPage = () => {
                                 value={language} 
                                 onChange={handleLanguageChange} 
                                 disabled={role === 'candidate' && isLocked}
-                                className="p-1 border rounded bg-card text-xs text-foreground focus:outline-none"
+                                className="p-1 border border-purple-100 dark:border-purple-950 text-xs rounded-lg bg-card text-foreground focus:outline-none"
                             >
                                 <option value="cpp">C++</option>
                                 <option value="python">Python</option>
@@ -462,7 +463,7 @@ const InterviewRoomPage = () => {
                         <Panel defaultSize={70} minSize={30}>
                             {role === 'candidate' && isLocked && (
                                 <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] flex items-center justify-center z-10 select-none">
-                                    <span className="bg-orange-600/90 text-white font-bold px-4 py-1.5 rounded text-xs shadow-lg tracking-wider">
+                                    <span className="bg-orange-600/90 text-white font-bold px-4 py-1.5 rounded-xl text-xs shadow-lg tracking-wider">
                                         🔒 Editor Locked by Interviewer
                                     </span>
                                 </div>
@@ -482,13 +483,13 @@ const InterviewRoomPage = () => {
                             />
                         </Panel>
 
-                        <PanelResizeHandle className="h-1.5 bg-border hover:bg-purple-600 transition-colors" />
+                        <PanelResizeHandle className="h-1.5 bg-purple-100 dark:bg-purple-950 hover:bg-purple-500 transition-colors" />
 
                         {/* Local Run Console */}
-                        <Panel defaultSize={30} minSize={20} className="border-t bg-card/10 flex flex-col">
-                            <div className="p-2 border-b bg-card/20 flex justify-between items-center">
-                                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Execution Console</span>
-                                <Button size="sm" onClick={handleRunCode} disabled={isRunning} className="bg-purple-600 hover:bg-purple-700 h-7 text-xs font-bold text-white">
+                        <Panel defaultSize={30} minSize={20} className="border-t border-purple-100 dark:border-purple-950/20 bg-purple-50/10 dark:bg-slate-900/10 flex flex-col">
+                            <div className="p-2 border-b border-purple-100 dark:border-purple-950/10 bg-purple-50/20 dark:bg-slate-900/20 flex justify-between items-center">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Execution Console</span>
+                                <Button size="sm" onClick={handleRunCode} disabled={isRunning} className="bg-purple-600 hover:bg-purple-700 h-7 text-xs font-bold text-white rounded-lg px-3 shadow-md">
                                     {isRunning ? 'Running...' : 'Run Code'}
                                 </Button>
                             </div>
@@ -496,55 +497,55 @@ const InterviewRoomPage = () => {
                                 <textarea 
                                     value={customInput} 
                                     onChange={(e) => setCustomInput(e.target.value)} 
-                                    placeholder="Enter input here..."
-                                    className="w-full h-full p-2 border rounded font-mono text-xs resize-none bg-background text-foreground"
+                                    placeholder="Enter input parameters..."
+                                    className="w-full h-full p-2 border border-purple-100 dark:border-purple-900/35 rounded-xl font-mono text-xs bg-background text-foreground focus:outline-none resize-none"
                                 />
-                                <pre className="w-full h-full p-2 border rounded bg-muted text-foreground font-mono text-xs overflow-y-auto whitespace-pre-wrap">
-                                    {runOutput || 'Execution results will appear here...'}
+                                <pre className="w-full h-full p-2 border border-purple-100 dark:border-purple-900/35 rounded-xl bg-slate-950 text-purple-200 font-mono text-xs overflow-y-auto whitespace-pre-wrap">
+                                    {runOutput || 'Execution output logs appear here...'}
                                 </pre>
                             </div>
                         </Panel>
                     </PanelGroup>
                 </Panel>
 
-                <PanelResizeHandle className="w-1.5 bg-border hover:bg-purple-600 transition-colors" />
+                <PanelResizeHandle className="w-1.5 bg-purple-100 dark:bg-purple-950 hover:bg-purple-500 transition-colors" />
 
-                {/* Right Panel: Interviewer Private Notes & Feedback (visible only to interviewer) */}
-                <Panel defaultSize={20} minSize={15} className="border-l flex flex-col h-full bg-card/10">
+                {/* Right Panel: Interviewer Private Notes */}
+                <Panel defaultSize={20} minSize={15} className="border-l border-purple-100 dark:border-purple-950/20 flex flex-col h-full bg-purple-50/10 dark:bg-slate-950/5">
                     {role === 'interviewer' ? (
                         <div className="flex-1 flex flex-col p-4 space-y-6 h-full overflow-y-auto">
                             <div className="flex flex-col flex-1">
-                                <label className="text-xs font-bold uppercase tracking-wider text-purple-300 mb-2">Private Notes</label>
+                                <label className="text-xs font-bold uppercase tracking-wider text-purple-700 dark:text-purple-400 mb-2">Private Notes</label>
                                 <textarea 
                                     value={notes} 
                                     onChange={(e) => setNotes(e.target.value)} 
-                                    placeholder="Write candidate evaluation notes..."
-                                    className="flex-1 w-full p-3 border rounded bg-background text-foreground text-xs resize-none focus:outline-none focus:ring-1 focus:ring-purple-500 h-[150px]"
+                                    placeholder="Assess logical flow and complexity..."
+                                    className="flex-1 w-full p-3 border border-purple-100 dark:border-purple-900/35 rounded-xl bg-background text-foreground text-xs resize-none focus:outline-none h-[150px]"
                                 />
-                                <Button size="xs" onClick={handleSaveNotes} className="bg-white/10 hover:bg-white/20 text-xs font-bold border mt-2 text-white h-7">
+                                <Button size="xs" onClick={handleSaveNotes} className="bg-purple-50 dark:bg-slate-950 border border-purple-200 text-purple-700 dark:text-purple-300 text-xs font-bold mt-2 h-8 rounded-xl hover:bg-purple-100">
                                     Save Notes
                                 </Button>
                             </div>
 
-                            <div className="flex flex-col flex-1 border-t border-white/10 pt-4">
-                                <label className="text-xs font-bold uppercase tracking-wider text-purple-300 mb-2">Final Summary Feedback</label>
+                            <div className="flex flex-col flex-1 border-t border-purple-100 dark:border-purple-950/20 pt-4">
+                                <label className="text-xs font-bold uppercase tracking-wider text-purple-700 dark:text-purple-400 mb-2">Final Feedback</label>
                                 <textarea 
                                     value={feedback} 
                                     onChange={(e) => setFeedback(e.target.value)} 
-                                    placeholder="Write candidate feedback summary..."
-                                    className="flex-1 w-full p-3 border rounded bg-background text-foreground text-xs resize-none focus:outline-none focus:ring-1 focus:ring-purple-500 h-[150px]"
+                                    placeholder="Write candidate review summary..."
+                                    className="flex-1 w-full p-3 border border-purple-100 dark:border-purple-900/35 rounded-xl bg-background text-foreground text-xs resize-none focus:outline-none h-[150px]"
                                 />
-                                <Button onClick={handleCompleteInterview} className="bg-green-600 hover:bg-green-700 text-xs font-bold text-white mt-4 py-2">
-                                    Complete & Submit Review
+                                <Button onClick={handleCompleteInterview} className="bg-green-600 hover:bg-green-700 text-xs font-bold text-white mt-4 py-2.5 rounded-xl shadow-md">
+                                    Complete Session
                                 </Button>
                             </div>
                         </div>
                     ) : (
-                        <div className="flex-grow flex items-center justify-center p-6 text-center text-gray-400">
+                        <div className="flex-grow flex items-center justify-center p-6 text-center text-slate-400">
                             <div>
                                 <span className="text-3xl block mb-3">🧑‍💻</span>
-                                <h4 className="font-bold text-white mb-2">Candidate Workspace</h4>
-                                <p className="text-xs">Your interviewer is observing your logic, code typing, and communication in real-time.</p>
+                                <h4 className="font-bold text-slate-800 dark:text-slate-200 mb-2">Candidate Workspace</h4>
+                                <p className="text-xs leading-relaxed max-w-xs">Your interviewer is observing your logic, code updates, and explanation skills in real-time.</p>
                             </div>
                         </div>
                     )}

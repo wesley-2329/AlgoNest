@@ -1,3 +1,4 @@
+// client/src/pages/ProblemDetailPage.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -183,17 +184,17 @@ const ProblemDetailPage = () => {
         }
     };
 
-    if (loading) return <div className="text-center pt-20 text-white">Loading problem...</div>;
-    if (!problem) return <div className="text-center pt-20 text-white">Problem not found.</div>;
+    if (loading) return <div className="text-center pt-20 text-purple-600 font-bold animate-pulse">Loading problem...</div>;
+    if (!problem) return <div className="text-center pt-20 text-purple-600 font-bold">Problem not found.</div>;
 
     return (
         <>
             {selectedSubmission && ( 
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-card rounded-lg w-3/4 h-3/4 flex flex-col shadow-2xl border">
-                        <div className="p-4 border-b flex justify-between items-center text-white">
-                            <h2 className="text-xl font-bold">Submitted Code ({selectedSubmission.language})</h2>
-                            <Button variant="ghost" size="icon" onClick={() => setSelectedSubmission(null)}>
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl w-3/4 h-3/4 flex flex-col shadow-2xl border border-purple-100 dark:border-purple-950/40 overflow-hidden">
+                        <div className="p-4 border-b border-purple-100 dark:border-purple-950/30 flex justify-between items-center text-slate-900 dark:text-white bg-purple-50/50 dark:bg-slate-950/40">
+                            <h2 className="text-lg font-bold">Submitted Code ({selectedSubmission.language})</h2>
+                            <Button variant="ghost" size="icon" onClick={() => setSelectedSubmission(null)} className="text-slate-500 hover:text-slate-900">
                                 <span className="text-2xl">&times;</span>
                             </Button>
                         </div>
@@ -211,65 +212,67 @@ const ProblemDetailPage = () => {
             )}
             
             {isReviewModalOpen && ( 
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-card rounded-lg w-1/2 h-3/4 flex flex-col shadow-2xl border text-white">
-                        <div className="p-4 border-b flex justify-between items-center">
-                            <h2 className="text-xl font-bold">🤖 AI Code Review</h2>
-                            <Button variant="ghost" size="icon" onClick={() => setIsReviewModalOpen(false)}>
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl w-1/2 h-3/4 flex flex-col shadow-2xl border border-purple-100 dark:border-purple-950/40 overflow-hidden text-slate-900 dark:text-white">
+                        <div className="p-4 border-b border-purple-100 dark:border-purple-950/30 flex justify-between items-center bg-purple-50/50 dark:bg-slate-950/40">
+                            <h2 className="text-lg font-bold flex items-center gap-2"><span>🤖</span> AI Code Review</h2>
+                            <Button variant="ghost" size="icon" onClick={() => setIsReviewModalOpen(false)} className="text-slate-500 hover:text-slate-900">
                                 <span className="text-2xl">&times;</span>
                             </Button>
                         </div>
-                        <div className="flex-grow p-6 overflow-y-auto prose dark:prose-invert">
-                            <pre className="whitespace-pre-wrap font-sans text-sm">{isReviewing ? 'Reviewing...' : review}</pre>
+                        <div className="flex-grow p-6 overflow-y-auto bg-slate-950">
+                            <pre className="whitespace-pre-wrap font-sans text-xs text-purple-200 leading-relaxed">{isReviewing ? 'AI reviewing your code...' : review}</pre>
                         </div>
                     </div>
                 </div> 
             )}
 
-            <PanelGroup direction="horizontal" className="p-4 h-[calc(100vh-64px)] text-white">
+            <PanelGroup direction="horizontal" className="p-4 h-[calc(100vh-64px)] text-slate-800 dark:text-white bg-background transition-colors duration-200">
                 <Panel defaultSize={50} minSize={30} className="pr-4">
                     <div className="flex flex-col h-full">
-                        <div>
-                            <h1 className="text-3xl font-bold mb-2">{problem.title}</h1>
-                            <span className={`px-2 py-1 text-sm font-semibold rounded ${problem.difficulty === 'Easy' ? 'bg-green-200 text-green-800' : problem.difficulty === 'Medium' ? 'bg-yellow-200 text-yellow-800' : 'bg-red-200 text-red-800'}`}>{problem.difficulty}</span>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2">{problem.title}</h1>
+                                <span className={`px-3 py-0.5 rounded-full text-xs font-bold ${problem.difficulty === 'Easy' ? 'bg-green-100 text-green-700' : problem.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>{problem.difficulty}</span>
+                            </div>
                         </div>
 
-                        <Tabs defaultValue="problem" className="w-full mt-6 flex flex-col flex-grow">
-                            <TabsList className="grid w-full grid-cols-2">
-                                <TabsTrigger value="problem">Problem</TabsTrigger>
-                                <TabsTrigger value="submissions">My Submissions</TabsTrigger>
+                        <Tabs defaultValue="problem" className="w-full mt-6 flex flex-col flex-grow overflow-hidden">
+                            <TabsList className="grid w-full grid-cols-2 bg-purple-50/50 dark:bg-slate-950/40 border border-purple-100/50 dark:border-purple-950/30 p-1 rounded-xl">
+                                <TabsTrigger value="problem" className="rounded-lg font-bold py-1.5">Problem Statement</TabsTrigger>
+                                <TabsTrigger value="submissions" className="rounded-lg font-bold py-1.5">My Submissions</TabsTrigger>
                             </TabsList>
                             
-                            <TabsContent value="problem" className="flex-grow flex flex-col overflow-y-auto mt-4 space-y-6">
-                                <div className="bg-card p-6 rounded-lg border">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <h2 className="text-2xl font-semibold">Problem Statement</h2>
+                            <TabsContent value="problem" className="flex-grow flex flex-col overflow-y-auto mt-4 space-y-6 pr-1">
+                                <div className="bg-white dark:bg-slate-900/60 p-6 rounded-2xl border border-purple-100 dark:border-purple-950/30 shadow-xl shadow-purple-950/5">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h2 className="text-lg font-bold text-slate-900 dark:text-white">Description</h2>
                                         <div className="flex gap-2">
-                                            <Button onClick={handleRevealHint} disabled={loadingHint} variant="secondary" size="sm">
+                                            <Button onClick={handleRevealHint} disabled={loadingHint} variant="outline" size="sm" className="border-purple-200 text-purple-700 dark:text-purple-300 dark:border-purple-900 text-xs font-bold hover:bg-purple-50">
                                                 {loadingHint ? 'Thinking...' : `🤖 Hint #${hints.length + 1}`}
                                             </Button>
-                                            <Button onClick={handleExplainProblem} disabled={isExplaining} variant="secondary" size="sm">
+                                            <Button onClick={handleExplainProblem} disabled={isExplaining} variant="outline" size="sm" className="border-purple-200 text-purple-700 dark:text-purple-300 dark:border-purple-900 text-xs font-bold hover:bg-purple-50">
                                                 {isExplaining ? 'Thinking...' : '🤖 Explain'}
                                             </Button>
                                         </div>
                                     </div>
-                                    <div className="prose dark:prose-invert max-w-none"><p className="whitespace-pre-wrap">{problem.statement}</p></div>
+                                    <div className="prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-350 text-sm leading-relaxed"><p className="whitespace-pre-wrap">{problem.statement}</p></div>
                                     
                                     {isExplained && (
-                                        <div className="mt-6 pt-6 border-t">
-                                            <h3 className="text-xl font-semibold mb-4">AI Explanation</h3>
-                                            <div className="prose dark:prose-invert max-w-none"><p className="whitespace-pre-wrap">{explanation}</p></div>
+                                        <div className="mt-6 pt-6 border-t border-purple-100 dark:border-purple-950/20">
+                                            <h3 className="text-base font-bold text-purple-900 dark:text-purple-300 mb-3">AI Breakdown</h3>
+                                            <div className="bg-purple-50/50 dark:bg-slate-950/40 p-4 rounded-xl border border-purple-100 dark:border-purple-950/20 prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 text-xs leading-relaxed"><p className="whitespace-pre-wrap">{explanation}</p></div>
                                         </div>
                                     )}
 
                                     {/* Progressive Hints List */}
                                     {hints.length > 0 && (
-                                        <div className="mt-6 pt-6 border-t space-y-4">
-                                            <h3 className="text-xl font-semibold">Revealed Hints</h3>
+                                        <div className="mt-6 pt-6 border-t border-purple-100 dark:border-purple-950/20 space-y-3">
+                                            <h3 className="text-base font-bold text-purple-900 dark:text-purple-300">Hints Logs</h3>
                                             {hints.map((hint, index) => (
-                                                <div key={index} className="bg-white/5 border p-4 rounded-lg">
-                                                    <span className="font-bold text-sm text-purple-300 block mb-1">Hint {index + 1}:</span>
-                                                    <p className="text-sm whitespace-pre-wrap leading-relaxed">{hint}</p>
+                                                <div key={index} className="bg-purple-50/40 dark:bg-slate-950/20 border border-purple-100 dark:border-purple-950/30 p-4 rounded-xl">
+                                                    <span className="font-bold text-xs text-purple-600 dark:text-purple-400 block mb-1.5">Clue #{index + 1}:</span>
+                                                    <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">{hint}</p>
                                                 </div>
                                             ))}
                                         </div>
@@ -277,18 +280,20 @@ const ProblemDetailPage = () => {
                                 </div>
                                 
                                 {problem.examples && problem.examples.length > 0 && ( 
-                                    <div className="mt-6">
-                                        <h2 className="text-2xl font-semibold mb-4">Examples</h2>
+                                    <div>
+                                        <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Examples</h2>
                                         {problem.examples.map((example, index) => (
-                                            <div key={index} className="bg-muted p-4 rounded-lg mb-4 border">
-                                                <h3 className="font-bold">Example {index + 1}</h3>
-                                                <div className="mt-2">
-                                                    <p className="font-semibold">Input:</p>
-                                                    <pre className="bg-primary-foreground text-secondary-foreground p-2 rounded mt-1"><code>{example.input}</code></pre>
-                                                </div>
-                                                <div className="mt-2">
-                                                    <p className="font-semibold">Output:</p>
-                                                    <pre className="bg-primary-foreground text-secondary-foreground p-2 rounded mt-1"><code>{example.output}</code></pre>
+                                            <div key={index} className="bg-white dark:bg-slate-900/60 p-5 rounded-2xl border border-purple-100 dark:border-purple-950/30 shadow-xl shadow-purple-950/5 mb-4">
+                                                <h3 className="font-bold text-sm text-purple-900 dark:text-purple-300">Example {index + 1}</h3>
+                                                <div className="mt-3 grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <p className="text-xs font-bold text-slate-400 uppercase">Input</p>
+                                                        <pre className="bg-purple-50/50 dark:bg-slate-950/40 text-purple-950 dark:text-purple-200 p-2.5 rounded-lg border border-purple-100/50 dark:border-purple-900/20 mt-1 font-mono text-xs overflow-x-auto"><code>{example.input}</code></pre>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-xs font-bold text-slate-400 uppercase">Output</p>
+                                                        <pre className="bg-purple-50/50 dark:bg-slate-950/40 text-purple-950 dark:text-purple-200 p-2.5 rounded-lg border border-purple-100/50 dark:border-purple-900/20 mt-1 font-mono text-xs overflow-x-auto"><code>{example.output}</code></pre>
+                                                    </div>
                                                 </div>
                                             </div>
                                         ))}
@@ -296,32 +301,32 @@ const ProblemDetailPage = () => {
                                 )}
                             </TabsContent>
                             
-                            <TabsContent value="submissions" className="flex-grow overflow-y-auto">
-                                <div className="mt-4 overflow-x-auto bg-card rounded-lg border h-full">
-                                    <table className="min-w-full">
-                                        <thead className="bg-muted border-b">
+                            <TabsContent value="submissions" className="flex-grow overflow-hidden flex flex-col mt-4">
+                                <div className="bg-white dark:bg-slate-900/60 rounded-2xl border border-purple-100 dark:border-purple-950/30 shadow-xl shadow-purple-950/5 overflow-y-auto flex-grow">
+                                    <table className="min-w-full divide-y divide-purple-100/50">
+                                        <thead className="bg-purple-50/55 dark:bg-purple-950/15">
                                             <tr>
-                                                <th className="text-left py-3 px-4 uppercase font-semibold text-sm">When</th>
-                                                <th className="text-left py-3 px-4 uppercase font-semibold text-sm">Language</th>
-                                                <th className="text-left py-3 px-4 uppercase font-semibold text-sm">Verdict</th>
+                                                <th className="text-left py-3.5 px-5 uppercase font-bold text-xs tracking-wider text-purple-900 dark:text-purple-300">When</th>
+                                                <th className="text-left py-3.5 px-5 uppercase font-bold text-xs tracking-wider text-purple-900 dark:text-purple-300">Language</th>
+                                                <th className="text-left py-3.5 px-5 uppercase font-bold text-xs tracking-wider text-purple-900 dark:text-purple-300">Verdict</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="text-muted-foreground">
+                                        <tbody className="divide-y divide-purple-100/30 text-slate-600 dark:text-slate-350">
                                             {submissions.length > 0 ? submissions.map(sub => (
-                                                <tr key={sub._id} className="hover:bg-muted/50 cursor-pointer border-t" onClick={() => setSelectedSubmission(sub)}>
-                                                    <td className="text-left py-3 px-4">{new Date(sub.createdAt).toLocaleString()}</td>
-                                                    <td className="text-left py-3 px-4">{sub.language}</td>
-                                                    <td className={`text-left py-3 px-4 font-bold ${
+                                                <tr key={sub._id} className="hover:bg-purple-50/30 dark:hover:bg-purple-950/10 cursor-pointer transition-colors" onClick={() => setSelectedSubmission(sub)}>
+                                                    <td className="py-3 px-5 text-xs">{new Date(sub.createdAt).toLocaleString()}</td>
+                                                    <td className="py-3 px-5 text-xs capitalize">{sub.language}</td>
+                                                    <td className={`py-3 px-5 text-xs font-bold ${
                                                         sub.verdict === 'Accepted' 
-                                                            ? 'text-green-500' 
+                                                            ? 'text-emerald-600 dark:text-emerald-400' 
                                                             : sub.verdict === 'Pending'
-                                                                ? 'text-blue-400 animate-pulse'
-                                                                : 'text-red-500'
+                                                                ? 'text-blue-500 animate-pulse'
+                                                                : 'text-rose-600'
                                                     }`}>{sub.verdict}</td>
                                                 </tr>
                                             )) : (
                                                 <tr>
-                                                    <td colSpan="3" className="text-center p-4">No submissions yet.</td>
+                                                    <td colSpan="3" className="text-center py-6 text-xs text-slate-400">No submissions recorded.</td>
                                                 </tr>
                                             )}
                                         </tbody>
@@ -332,23 +337,23 @@ const ProblemDetailPage = () => {
                     </div>
                 </Panel>
                 
-                <PanelResizeHandle className="w-2 bg-border hover:bg-primary transition-colors" />
+                <PanelResizeHandle className="w-1.5 bg-purple-100 dark:bg-purple-950 hover:bg-purple-500 transition-colors" />
 
                 <Panel defaultSize={50} minSize={30} className="pl-4">
                     <div className="flex flex-col h-full">
-                        <div className="flex justify-end items-center mb-2">
+                        <div className="flex justify-end items-center mb-3">
                             <select 
                                 id="language-select" 
                                 value={language} 
                                 onChange={(e) => setLanguage(e.target.value)} 
-                                className="p-2 border rounded bg-card text-foreground"
+                                className="p-1.5 border border-purple-100 dark:border-purple-950 text-xs rounded-lg bg-card text-foreground focus:outline-none"
                             >
                                 <option value="cpp">C++</option>
                                 <option value="python">Python</option>
                                 <option value="java">Java</option>
                             </select>
                         </div>
-                        <PanelGroup direction="vertical" className="flex-grow rounded-lg border">
+                        <PanelGroup direction="vertical" className="flex-grow rounded-2xl border border-purple-100 dark:border-purple-950/30 overflow-hidden shadow-lg">
                             <Panel defaultSize={65} minSize={20}>
                                 <Editor 
                                     height="100%" 
@@ -358,62 +363,66 @@ const ProblemDetailPage = () => {
                                     theme={theme === 'dark' ? 'vs-dark' : 'light'}
                                 />
                             </Panel>
-                            <PanelResizeHandle className="h-2 bg-border hover:bg-primary transition-colors" />
+                            <PanelResizeHandle className="h-1.5 bg-purple-100 dark:bg-purple-950 hover:bg-purple-500 transition-colors" />
                             <Panel defaultSize={35} minSize={20}>
-                                <div className="h-full flex flex-col">
-                                    <div className="p-2 border-b font-medium text-sm text-muted-foreground">Test with Custom Input</div>
-                                    <div className="flex-grow grid grid-cols-2 gap-2 p-2">
-                                        <div className="flex flex-col">
-                                            <label className="text-xs font-semibold mb-1 text-muted-foreground">INPUT</label>
+                                <div className="h-full flex flex-col bg-purple-50/20 dark:bg-slate-900/40">
+                                    <div className="p-2 border-b border-purple-100 dark:border-purple-950/20 font-bold text-xs uppercase tracking-wider text-slate-400">Test Custom input</div>
+                                    <div className="flex-1 grid grid-cols-2 gap-2 p-2 overflow-hidden h-[120px]">
+                                        <div className="flex flex-col h-full">
                                             <textarea 
                                                 value={customInput} 
                                                 onChange={(e) => setCustomInput(e.target.value)} 
-                                                className="w-full h-full p-2 border rounded font-mono text-sm resize-none bg-background text-foreground" 
-                                                placeholder="Enter input..."
+                                                className="w-full h-full p-2.5 border border-purple-100 dark:border-purple-900/35 rounded-xl font-mono text-xs resize-none bg-background text-foreground focus:outline-none" 
+                                                placeholder="Enter parameters..."
                                             />
                                         </div>
-                                        <div className="flex flex-col">
-                                            <label className="text-xs font-semibold mb-1 text-muted-foreground">OUTPUT</label>
-                                            <pre className="w-full h-full p-2 border rounded bg-muted text-muted-foreground font-mono text-sm whitespace-pre-wrap overflow-y-auto">
-                                                {isRunning ? 'Running...' : (runOutput ? (runOutput.error || runOutput.output) : 'Run your code to see the output here.')}
+                                        <div className="flex flex-col h-full">
+                                            <pre className="w-full h-full p-2.5 border border-purple-100 dark:border-purple-900/35 rounded-xl bg-slate-950 text-purple-200 font-mono text-xs whitespace-pre-wrap overflow-y-auto">
+                                                {isRunning ? 'Executing test...' : (runOutput ? (runOutput.error || runOutput.output) : 'Execution logs appear here...')}
                                             </pre>
                                         </div>
                                     </div>
                                 </div>
                             </Panel>
                         </PanelGroup>
-                        <div className="mt-4 flex justify-end gap-4">
-                            <Button variant="secondary" onClick={handleCodeReview} disabled={isReviewing || isRunning || isSubmitting}>{isReviewing ? 'Reviewing...' : 'AI Review'}</Button>
-                            <Button variant="secondary" onClick={handleRunCode} disabled={isRunning || isSubmitting}>{isRunning ? 'Running...' : 'Run'}</Button>
-                            <Button onClick={handleSubmit} disabled={isSubmitting || isRunning}>{isSubmitting ? 'Submitting...' : 'Submit'}</Button>
+                        <div className="mt-4 flex justify-end gap-3">
+                            <Button variant="outline" onClick={handleCodeReview} disabled={isReviewing || isRunning || isSubmitting} className="border-purple-200 text-purple-700 hover:bg-purple-50 font-bold px-4 h-9 rounded-xl text-xs">
+                                {isReviewing ? 'Analyzing...' : '🤖 AI Review'}
+                            </Button>
+                            <Button variant="outline" onClick={handleRunCode} disabled={isRunning || isSubmitting} className="border-purple-200 text-purple-700 hover:bg-purple-50 font-bold px-4 h-9 rounded-xl text-xs">
+                                {isRunning ? 'Executing...' : 'Run Code'}
+                            </Button>
+                            <Button onClick={handleSubmit} disabled={isSubmitting || isRunning} className="bg-purple-600 hover:bg-purple-700 text-white font-bold px-5 h-9 rounded-xl text-xs shadow-md">
+                                {isSubmitting ? 'Queueing...' : 'Submit'}
+                            </Button>
                         </div>
                         
                         {result && (
                             <div className="mt-6 overflow-y-auto">
-                                <h2 className="text-2xl font-semibold">Result</h2>
-                                <div className={`mt-2 p-4 rounded-lg border ${
+                                <h2 className="text-lg font-bold mb-2">Verdict Status</h2>
+                                <div className={`p-4 rounded-2xl border ${
                                     result.verdict === 'Accepted' 
-                                        ? 'bg-green-500/20 border-green-500' 
+                                        ? 'bg-emerald-500/10 border-emerald-500/35 text-emerald-800 dark:text-emerald-350' 
                                         : result.verdict === 'Pending'
-                                            ? 'bg-blue-500/20 border-blue-500 animate-pulse'
-                                            : 'bg-red-500/20 border-red-500'
+                                            ? 'bg-blue-500/10 border-blue-500/35 text-blue-800 dark:text-blue-350 animate-pulse'
+                                            : 'bg-rose-500/10 border-rose-500/35 text-rose-800 dark:text-rose-350'
                                 }`}>
-                                    <p className="font-bold text-lg">Verdict: {result.verdict}</p>
+                                    <p className="font-extrabold text-sm tracking-wide">Verdict: {result.verdict}</p>
                                     {result.verdict !== 'Pending' && (
                                         <>
-                                            <h3 className="font-semibold mt-2">Output:</h3>
-                                            <pre className="bg-primary-foreground p-2 rounded mt-1 whitespace-pre-wrap">{result.output}</pre>
+                                            <h3 className="font-bold text-xs mt-3 uppercase tracking-wider opacity-85">Output:</h3>
+                                            <pre className="bg-slate-950 text-purple-200 p-2.5 rounded-xl border border-purple-900/30 mt-1 whitespace-pre-wrap text-xs">{result.output}</pre>
                                             {(result.verdict === 'Wrong Answer' || result.verdict === 'Runtime Error') && (
                                                 <div className="mt-4">
-                                                    <Button variant="destructive" onClick={handleDebugCode} disabled={isDebugging}>
-                                                        {isDebugging ? 'Analyzing...' : '🤖 Why is my code wrong?'}
+                                                    <Button variant="destructive" onClick={handleDebugCode} disabled={isDebugging} className="text-xs font-bold rounded-xl h-8">
+                                                        {isDebugging ? 'Searching error...' : '🤖 Ask Coach why it failed'}
                                                     </Button>
                                                 </div>
                                             )}
                                             {debugExplanation && (
-                                                <div className="mt-4 bg-secondary/50 p-6 rounded-lg border">
-                                                    <h3 className="text-xl font-semibold mb-2">AI Debugger</h3>
-                                                    <p className="whitespace-pre-wrap">{debugExplanation}</p>
+                                                <div className="mt-4 bg-slate-950 p-4 rounded-xl border border-purple-900/40">
+                                                    <h3 className="text-xs font-bold text-purple-400 mb-2 uppercase tracking-wide">Coach Clues</h3>
+                                                    <p className="whitespace-pre-wrap text-xs text-purple-200 leading-relaxed">{debugExplanation}</p>
                                                 </div>
                                             )}
                                         </>
